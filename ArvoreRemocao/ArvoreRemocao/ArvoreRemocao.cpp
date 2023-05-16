@@ -83,7 +83,7 @@ void menu()
 void inicializar()
 {
 
-	// provis�rio porque n�o libera a memoria usada pela arvore
+	// provisório porque não libera a memoria usada pela arvore
 	raiz = NULL;
 
 	cout << "Arvore inicializada \n";
@@ -129,6 +129,82 @@ void remover() {
 	cin >> valor;
 
 	removerElementoArvore(raiz, valor);
+	void removerElementoArvore(NO * no, int valor); {
+		NO* pai = NULL;
+		NO* no = NULL;
+		NO* atual = buscarElementoArvoreComPai(no, valor, pai);
+		if (atual == NULL) {
+			cout << "Elemento nao encontrado \n";
+			return;
+		}
+		// PS: Eu não sei o que tá dando de errado :(
+		
+		// Caso 1: Sem filhos
+		if (atual->esq == NULL && atual->dir == NULL) {
+			if (pai == NULL) {
+				// O nó a ser removido é a raiz da árvore
+				raiz = NULL;
+			}
+			else if (pai->esq == atual) {
+				// O nó a ser removido é um filho à esquerda do pai
+				pai->esq = NULL;
+			}
+			else {
+				// O nó a ser removido é um filho à direita do pai
+				pai->dir = NULL;
+			}
+			delete atual;
+		}
+
+		// Caso 2: Um filho
+		else if (atual->esq == NULL || atual->dir == NULL) {
+			NO* filho;
+			if (atual->esq != NULL) {
+				// O filho está à esquerda
+				filho = atual->esq;
+			}
+			else {
+				// O filho está à direita
+				filho = atual->dir;
+			}
+			if (pai == NULL) {
+				// O nó a ser removido é a raiz da árvore
+				raiz = filho;
+			}
+			else if (pai->esq == atual) {
+				// O nó a ser removido é um filho à esquerda do pai
+				pai->esq = filho;
+			}
+			else {
+				// O nó a ser removido é um filho à direita do pai
+				pai->dir = filho;
+			}
+			delete atual;
+		}
+
+		// Caso 3: Dois filhos
+		else {
+			NO* sucessor = atual->dir;
+			NO* paiSucessor = atual;
+			while (sucessor->esq != NULL) {
+				paiSucessor = sucessor;
+				sucessor = sucessor->esq;
+			}
+
+			atual->valor = sucessor->valor;
+
+			if (paiSucessor->esq == sucessor) {
+				// O nó sucessor é um filho à esquerda do paiSucessor
+				paiSucessor->esq = sucessor->dir;
+			}
+			else {
+				// O nó sucessor é um filho à direita do paiSucessor
+				paiSucessor->dir = sucessor->dir;
+			}
+			delete sucessor;
+		}
+	}
+
 }
 
 
@@ -276,7 +352,7 @@ void removerElementoArvore(NO* no, int valor) {
 		paiSucessor->esq = NULL;
 	}
 
-	//libera memoria
+	//libera memoria 
 	free(sucessor);
 
 
